@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hqv.studentmgmt.entity.Department;
+import com.hqv.studentmgmt.entity.DepartmentDocument;
+import com.hqv.studentmgmt.repository.DepartmentDocumentRepo;
 import com.hqv.studentmgmt.repository.DepartmentRepository;
 
 @RestController
@@ -23,11 +25,21 @@ public class DepatmentApi {
 	@Autowired
 	DepartmentRepository departmentRepository;
 	
+	@Autowired
+	DepartmentDocumentRepo departmentDocumentRepo;
+	
 	@PostMapping("/department")
 	public Department saveDepartment(
 			@RequestBody Department department)
 	{
 		departmentRepository.save(department);
+		
+		// mongo insert
+		DepartmentDocument dd = new DepartmentDocument();
+		dd.setAddress(department.getAddress());
+		dd.setName(department.getName());
+		departmentDocumentRepo.save(dd);
+		
 		return department;
 	}
 	
